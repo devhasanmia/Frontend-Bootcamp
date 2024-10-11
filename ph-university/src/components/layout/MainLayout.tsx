@@ -1,43 +1,51 @@
 import React, { useState } from "react";
 import { BsMenuButtonWideFill } from "react-icons/bs";
-import { Button, Layout, Menu, MenuProps } from "antd";
+import { Button, Layout, Menu } from "antd";
 import { Footer } from "antd/es/layout/layout";
-import { NavLink, Outlet } from "react-router-dom";
-
+import { Outlet } from "react-router-dom";
+import { SidebarItemGenerator } from "../../utils/SidebarGenerator";
+import { facultyPaths } from "../../routes/faculty.routes";
+import { adminPaths } from "../../routes/admin.routes";
+import { studentPaths } from "../../routes/student.routes";
+import { ItemType, MenuItemType } from "antd/es/menu/interface";
+import { TSidebarItem } from "../../types";
 const { Header, Sider, Content } = Layout;
 
-let items: MenuProps["items"] = [
-  {
-    key: "Dashboard",
-    label: <NavLink to={"/admin/dashboard"}>Dashboard</NavLink>,
-  },
-  {
-    key: "User Management",
-    label: "User Management",
-    children: [
-      {
-        key: "Create Faculty",
-        label: <NavLink to={"/admin/create-faculty"}>Create Faculty</NavLink>,
-      },
-      {
-        key: "Create Student",
-        label: <NavLink to={"/admin/create-student"}>Create Student</NavLink>,
-      },
-    ],
-  },
-];
+// Role Managment Start
+let userRole = {
+  ADMIN: "admin",
+  FACULTY: "faculty",
+  STUDENT: "student",
+};
+
+let role = "faculty";
+
+let sidebarItem: TSidebarItem[] | ItemType<MenuItemType>[] | undefined;
+
+switch (role) {
+  case userRole.ADMIN:
+    sidebarItem = SidebarItemGenerator(adminPaths, userRole.ADMIN);
+    break;
+  case userRole.FACULTY:
+    sidebarItem = SidebarItemGenerator(facultyPaths, userRole.FACULTY);
+    break;
+  case userRole.STUDENT:
+    sidebarItem = SidebarItemGenerator(studentPaths, userRole.STUDENT);
+    break;
+}
+
+// Role Managment End
 
 const App: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
-
   return (
     <Layout style={{ height: "100vh" }}>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div
           style={{
             color: "white",
-            height:'4rem',
-            display:"flex",
+            height: "4rem",
+            display: "flex",
             justifyContent: "center",
             alignItems: "center",
           }}
@@ -48,14 +56,16 @@ const App: React.FC = () => {
           theme="dark"
           mode="inline"
           defaultSelectedKeys={["6"]}
-          items={items}
+          items={sidebarItem}
         />
       </Sider>
       <Layout>
         <Header style={{ padding: 0 }}>
           <Button
             type="text"
-            icon={collapsed ? <BsMenuButtonWideFill /> : <BsMenuButtonWideFill />}
+            icon={
+              collapsed ? <BsMenuButtonWideFill /> : <BsMenuButtonWideFill />
+            }
             onClick={() => setCollapsed(!collapsed)}
             style={{
               fontSize: "16px",
@@ -71,9 +81,9 @@ const App: React.FC = () => {
             padding: 24,
           }}
         >
-         <Outlet/>
+          <Outlet />
         </Content>
-        <Footer style={{ textAlign: 'center' }}>
+        <Footer style={{ textAlign: "center" }}>
           PH &copy; 2024-{new Date().getFullYear()} All Rights Reserved.
         </Footer>
       </Layout>

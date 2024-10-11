@@ -8,11 +8,6 @@ const adminPaths = [
     name: "User Management",
     children: [
       {
-        name: "dashboard",
-        path: "dashboard",
-        element: "<AdminDashboard />",
-      },
-      {
         name: "Create Faculty",
         path: "create-faculty",
         element: "<CreateFaculty />",
@@ -26,28 +21,27 @@ const adminPaths = [
   },
 ];
 
-/**
- * key: "Dashboard",
-    label: <NavLink to={"/admin/dashboard"}>Dashboard</NavLink>,
- */
 
-const sideBar = adminPaths.reduce((acc, item) => {
+const sideberItems = adminPaths.reduce((acc, item) => {
   if (item.name && item.path) {
     acc.push({
       key: item.name,
-      label: "Navlink",
-    });
+      label: "Nav LINK"
+    })
   }
   if (item.children) {
-    item.children.map((child) =>
-      acc.push({
+    acc.push({
+      key: item.name,
+      label: item.name,
+      children: item.children.map((child) => ({
         key: child.name,
-        label: child.name,
-        children: []
-      })
-    );
+        label: "Navlink"
+      }))
+    })
   }
-  return acc;
-}, []);
+  return acc
+}, [])
 
-console.log(sideBar);
+
+console.log(JSON.stringify(sideberItems));
+        
